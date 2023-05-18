@@ -1,0 +1,137 @@
+config:
+  CHECKPOINT:
+    AUTO_RESUME: true
+    CHECKPOINT_FREQUENCY: 5
+    DIR: /mnt/fs6/eshedm/spacetorch/vissl_checkpoints/linear_eval/relu_rescue__simclr_spatial_resnet18_swappedon_SineGrating2019_isoswap_3_lwx100_linear_eval_checkpoints
+  DATA:
+    NUM_DATALOADER_WORKERS: 4
+    TEST:
+      BATCHSIZE_PER_REPLICA: 256
+      COPY_TO_LOCAL_DISK: false
+      DATASET_NAMES:
+      - imagenet1k_folder
+      DATA_PATHS:
+      - /data5/chengxuz/imagenet_raw/validation
+      DATA_SOURCES:
+      - disk_folder
+      LABEL_SOURCES:
+      - disk_folder
+      MMAP_MODE: true
+      TRANSFORMS:
+      - name: Resize
+        size: 256
+      - name: CenterCrop
+        size: 224
+      - name: ToTensor
+      - mean:
+        - 0.485
+        - 0.456
+        - 0.406
+        name: Normalize
+        std:
+        - 0.229
+        - 0.224
+        - 0.225
+    TRAIN:
+      BATCHSIZE_PER_REPLICA: 256
+      COPY_TO_LOCAL_DISK: false
+      DATASET_NAMES:
+      - imagenet1k_folder
+      DATA_PATHS:
+      - /data5/chengxuz/imagenet_raw/train
+      DATA_SOURCES:
+      - disk_folder
+      LABEL_SOURCES:
+      - disk_folder
+      MMAP_MODE: true
+      TRANSFORMS:
+      - name: RandomResizedCrop
+        size: 224
+      - name: RandomHorizontalFlip
+      - name: ToTensor
+      - mean:
+        - 0.485
+        - 0.456
+        - 0.406
+        name: Normalize
+        std:
+        - 0.229
+        - 0.224
+        - 0.225
+  DISTRIBUTED:
+    BACKEND: nccl
+    NUM_NODES: 1
+    NUM_PROC_PER_NODE: 4
+    RUN_ID: auto
+  LOG_FREQUENCY: 500
+  LOSS:
+    cross_entropy_multiple_output_single_target:
+      ignore_index: -1
+    name: cross_entropy_multiple_output_single_target
+  MACHINE:
+    DEVICE: gpu
+  METERS:
+    accuracy_list_meter:
+      num_meters: 1
+      topk_values:
+      - 1
+      - 5
+    name: accuracy_list_meter
+  MODEL:
+    FEATURE_EVAL_SETTINGS:
+      EVAL_MODE_ON: true
+      FREEZE_TRUNK_ONLY: true
+      SHOULD_FLATTEN_FEATS: false
+    HEAD:
+      PARAMS:
+      - - eval_mlp
+        - dims:
+          - 512
+          - 1000
+          in_channels: 512
+    SYNC_BN_CONFIG:
+      CONVERT_BN_TO_SYNC_BN: true
+      SYNC_BN_TYPE: pytorch
+    TRUNK:
+      NAME: custom_resnet
+      TRUNK_PARAMS:
+        VisslResNet:
+          ARCH: resnet18
+    WEIGHTS_INIT:
+      PARAMS_FILE: /mnt/fs6/eshedm/spacetorch/vissl_checkpoints/relu_rescue/simclr_spatial_resnet18_swappedon_SineGrating2019_isoswap_3_lwx100_checkpoints/model_final_checkpoint_phase199.torch
+      STATE_DICT_KEY_NAME: classy_state_dict
+  MULTI_PROCESSING_METHOD: forkserver
+  OPTIMIZER:
+    momentum: 0.9
+    name: sgd
+    nesterov: true
+    num_epochs: 28
+    param_schedulers:
+      lr:
+        auto_lr_scaling:
+          auto_scale: true
+          base_lr_batch_size: 256
+          base_value: 0.01
+        milestones:
+        - 8
+        - 16
+        - 24
+        name: multistep
+        update_interval: epoch
+        values:
+        - 0.01
+        - 0.001
+        - 0.0001
+        - 1.0e-05
+    regularize_bias: true
+    regularize_bn: false
+    weight_decay: 0.0005
+  SEED_VALUE: 0
+  TENSORBOARD_SETUP:
+    USE_TENSORBOARD: true
+  TEST_EVERY_NUM_EPOCH: 4
+  TEST_MODEL: true
+  TEST_ONLY: false
+  TRAINER:
+    TRAIN_STEP_NAME: standard_train_step
+  VERBOSE: true

@@ -1,0 +1,20 @@
+name: simclr_spatial_resnet18_trained_sine_gratings
+model:
+  name: SpatialResNet18
+  model_config:
+    NAME: spatial_resnet18
+    TRUNK:
+      TRUNK_PARAMS:
+        position_dir: supervised_resnet18/resnet18_retinotopic_init_fuzzy_swappedon_SineGrating2019
+  weights:
+    checkpoint_dir: checkpoints/simclr_spatial_SG_pretrain_minimal_aug_biased
+    step: latest
+  layers:
+    - "layer1.0"
+    - "layer1.1"
+    - "layer2.0"
+    - "layer2.1"
+    - "layer3.0"
+    - "layer3.1"
+    - "layer4.0"
+    - "layer4.1"

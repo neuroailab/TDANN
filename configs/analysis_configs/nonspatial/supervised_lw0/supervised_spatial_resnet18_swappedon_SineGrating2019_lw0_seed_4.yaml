@@ -1,0 +1,27 @@
+name: supervised_spatial_resnet18_swappedon_SineGrating_2019_lw0_seed_4
+model:
+  name: VisslResNet
+  model_config:
+    TRUNK:
+      TRUNK_PARAMS:
+        VisslResNet:
+          ARCH: resnet18
+    HEAD:
+      PARAMS_MULTIPLIER: 1.0
+      DIMS: [512, 1000]
+  weights:
+    checkpoint_dir: "vissl_checkpoints/supervised_resnet18_lw0_seed_4_checkpoints"
+    step: latest
+  layers:
+    - "layer1.0"
+    - "layer1.1"
+    - "layer2.0"
+    - "layer2.1"
+    - "layer3.0"
+    - "layer3.1"
+    - "layer4.0"
+    - "layer4.1"
+initial_position_dir: "resnet18_retinotopic_init_fuzzy"
+swapopt:
+  num_steps: 50000000
+  steps_per_neighborhood: 500

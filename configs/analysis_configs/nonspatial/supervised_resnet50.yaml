@@ -1,0 +1,36 @@
+name: supervised_resnet50
+model:
+  name: VisslResNet
+  base_model_name: resnet50
+  model_config:
+    TRUNK:
+      TRUNK_PARAMS:
+        VisslResNet:
+          ARCH: resnet50
+    HEAD:
+      PARAMS_MULTIPLIER: 1.0
+      DIMS: [2048, 1000]
+  weights:
+    checkpoint_dir: "vissl_checkpoints/supervised_resnet50_checkpoints"
+    step: latest
+  layers:
+    - "layer1.0"
+    - "layer1.1"
+    - "layer1.2"
+    - "layer2.0"
+    - "layer2.1"
+    - "layer2.2"
+    - "layer2.3"
+    - "layer3.0"
+    - "layer3.1"
+    - "layer3.2"
+    - "layer3.3"
+    - "layer3.4"
+    - "layer3.5"
+    - "layer4.0"
+    - "layer4.1"
+    - "layer4.2"
+initial_position_dir: "resnet50_retinotopic_init"
+swapopt:
+  num_steps: 100000000
+  steps_per_neighborhood: 500

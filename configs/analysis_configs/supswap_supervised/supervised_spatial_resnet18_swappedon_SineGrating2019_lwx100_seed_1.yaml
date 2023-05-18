@@ -1,0 +1,11 @@
+model:
+  model_config:
+    TRUNK:
+      NAME: spatial_resnet18
+      TRUNK_PARAMS:
+        position_dir: supervised_resnet18_lw0/resnet18_retinotopic_init_fuzzy_swappedon_SineGrating2019
+  name: SpatialResNet18
+  weights:
+    checkpoint_dir: checkpoints/supervised_spatial_resnet18_swappedon_SineGrating2019_lwx100_seed_1_checkpoints
+    step: latest
+name: supervised_spatial_resnet18_swappedon_SineGrating2019_lwx100_seed_1

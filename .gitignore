@@ -1,0 +1,23 @@
+# python
+__pycache__
+*.pyc
+.venv
+*.egg-info
+*.pkl
+*.npz
+
+# text editors
+*.swp
+.vim
+tags*
+.vscode
+
+# jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# images
+*.png
+
+# vissl
+vissl_checkpoint*

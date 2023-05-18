@@ -1,0 +1,135 @@
+config:
+  CHECKPOINT:
+    AUTO_RESUME: true
+    CHECKPOINT_FREQUENCY: 5
+    DIR: /mnt/fs6/eshedm/spacetorch/vissl_checkpoints/supervised_spatial_resnet18_swappedon_SineGrating2019_lwx10_seed_1_checkpoints
+  DATA:
+    NUM_DATALOADER_WORKERS: 6
+    TEST:
+      BATCHSIZE_PER_REPLICA: 256
+      DATASET_NAMES:
+      - imagenet1k_folder
+      DATA_PATHS:
+      - /data5/chengxuz/imagenet_raw/validation
+      DATA_SOURCES:
+      - disk_folder
+      LABEL_SOURCES:
+      - disk_folder
+      TRANSFORMS:
+      - name: Resize
+        size: 256
+      - name: CenterCrop
+        size: 224
+      - name: ToTensor
+      - mean:
+        - 0.485
+        - 0.456
+        - 0.406
+        name: Normalize
+        std:
+        - 0.229
+        - 0.224
+        - 0.225
+    TRAIN:
+      BATCHSIZE_PER_REPLICA: 256
+      DATASET_NAMES:
+      - imagenet1k_folder
+      DATA_PATHS:
+      - /data5/chengxuz/imagenet_raw/train
+      DATA_SOURCES:
+      - disk_folder
+      LABEL_SOURCES:
+      - disk_folder
+      LABEL_TYPE: standard
+      TRANSFORMS:
+      - name: RandomResizedCrop
+        size: 224
+      - name: RandomHorizontalFlip
+      - brightness: 0.4
+        contrast: 0.4
+        hue: 0.4
+        name: ColorJitter
+        saturation: 0.4
+      - name: ToTensor
+      - mean:
+        - 0.485
+        - 0.456
+        - 0.406
+        name: Normalize
+        std:
+        - 0.229
+        - 0.224
+        - 0.225
+  DISTRIBUTED:
+    BACKEND: nccl
+    NUM_NODES: 1
+    NUM_PROC_PER_NODE: 2
+    RUN_ID: auto
+  LOG_FREQUENCY: 500
+  LOSS:
+    cross_entropy_spatial_correlation_loss:
+      ignore_index: -1
+      layer_weights:
+        layer1_0: 2.5
+        layer1_1: 2.5
+        layer2_0: 2.5
+        layer2_1: 2.5
+        layer3_0: 2.5
+        layer3_1: 2.5
+        layer4_0: 2.5
+        layer4_1: 2.5
+      neighborhoods_per_batch: 1
+      temperature: 1.0
+      use_old_version: false
+    name: cross_entropy_spatial_correlation_loss
+  MACHINE:
+    DEVICE: gpu
+  METERS:
+    accuracy_list_meter:
+      num_meters: 1
+      topk_values:
+      - 1
+      - 5
+    name: accuracy_list_meter
+  MODEL:
+    HEAD:
+      PARAMS:
+      - - mlp
+        - dims:
+          - 512
+          - 1000
+      - - identity
+        - {}
+    TRUNK:
+      NAME: spatial_resnet18
+      TRUNK_PARAMS:
+        position_dir: /mnt/fs6/eshedm/spacetorch/positions/supervised_resnet18_lw0/resnet18_retinotopic_init_fuzzy_swappedon_SineGrating2019
+  MULTI_PROCESSING_METHOD: fork
+  OPTIMIZER:
+    momentum: 0.9
+    name: sgd
+    nesterov: true
+    num_epochs: 200
+    param_schedulers:
+      lr:
+        auto_lr_scaling:
+          auto_scale: true
+          base_lr_batch_size: 256
+          base_value: 0.3
+        end_value: 0.0
+        name: cosine
+        start_value: 0.15
+        update_interval: step
+    regularize_bias: true
+    regularize_bn: false
+    use_larc: false
+    weight_decay: 1.0e-06
+  SEED_VALUE: 1
+  TENSORBOARD_SETUP:
+    USE_TENSORBOARD: true
+  TEST_EVERY_NUM_EPOCH: 5
+  TEST_MODEL: true
+  TEST_ONLY: false
+  TRAINER:
+    TRAIN_STEP_NAME: custom_train_step
+  VERBOSE: true

@@ -1,0 +1,120 @@
+config:
+  CHECKPOINT:
+    AUTO_RESUME: true
+    CHECKPOINT_FREQUENCY: 5
+    DIR: /data/eshedm/spacetorch/checkpoints/simclr_spatial_resnet18_swappedon_SineGrating2019_old_scl_lwx100_seed_3_checkpoints
+  DATA:
+    NUM_DATALOADER_WORKERS: 8
+    TRAIN:
+      BATCHSIZE_PER_REPLICA: 128
+      COLLATE_FUNCTION: simclr_collator
+      COPY_TO_LOCAL_DISK: false
+      DATASET_NAMES:
+      - imagenet1k_folder
+      DATA_LIMIT: -1
+      DATA_PATHS:
+      - /data/chengxuz/Dataset/imagenet_raw/train
+      DATA_SOURCES:
+      - disk_folder
+      DROP_LAST: true
+      LABEL_TYPE: sample_index
+      MMAP_MODE: true
+      TRANSFORMS:
+      - name: ImgReplicatePil
+        num_times: 2
+      - name: RandomResizedCrop
+        size: 224
+      - name: RandomHorizontalFlip
+        p: 0.5
+      - name: ImgPilColorDistortion
+        strength: 1.0
+      - name: ImgPilGaussianBlur
+        p: 0.5
+        radius_max: 2.0
+        radius_min: 0.1
+      - name: ToTensor
+      - mean:
+        - 0.485
+        - 0.456
+        - 0.406
+        name: Normalize
+        std:
+        - 0.229
+        - 0.224
+        - 0.225
+  DISTRIBUTED:
+    BACKEND: nccl
+    NUM_NODES: 1
+    NUM_PROC_PER_NODE: 4
+    RUN_ID: auto
+  LOG_FREQUENCY: 500
+  LOSS:
+    name: spatial_correlation_simclr_info_nce_loss
+    spatial_correlation_simclr_info_nce_loss:
+      buffer_params:
+        embedding_dim: 128
+      layer_weights:
+        layer1_0: 25.0
+        layer1_1: 25.0
+        layer2_0: 25.0
+        layer2_1: 25.0
+        layer3_0: 25.0
+        layer3_1: 25.0
+        layer4_0: 25.0
+        layer4_1: 25.0
+      neighborhoods_per_batch: 1
+      temperature: 0.1
+      use_old_version: true
+  MACHINE:
+    DEVICE: gpu
+  METERS:
+    name: ''
+  MODEL:
+    HEAD:
+      PARAMS:
+      - - - mlp
+          - dims:
+            - 512
+            - 512
+            use_relu: true
+        - - mlp
+          - dims:
+            - 512
+            - 128
+      - - identity
+        - {}
+    SYNC_BN_CONFIG:
+      CONVERT_BN_TO_SYNC_BN: true
+      SYNC_BN_TYPE: pytorch
+    TRUNK:
+      NAME: spatial_resnet18
+      TRUNK_PARAMS:
+        position_dir: /data/eshedm/spacetorch/positions/simclr_spatial_resnet18_fuzzy_swappedon_SineGrating2019_lw0/resnet18_retinotopic_init_fuzzy_swappedon_SineGrating2019_NBVER2
+  MULTI_PROCESSING_METHOD: forkserver
+  OPTIMIZER:
+    momentum: 0.9
+    name: sgd
+    nesterov: false
+    num_epochs: 200
+    param_schedulers:
+      lr:
+        auto_lr_scaling:
+          auto_scale: true
+          base_lr_batch_size: 256
+          base_value: 0.3
+        end_value: 0.0
+        name: cosine
+        start_value: 0.15
+        update_interval: step
+    regularize_bias: true
+    regularize_bn: false
+    use_larc: false
+    weight_decay: 1.0e-06
+  SEED_VALUE: 3
+  TENSORBOARD_SETUP:
+    USE_TENSORBOARD: true
+  TEST_MODEL: false
+  TEST_ONLY: false
+  TRAINER:
+    TRAIN_STEP_NAME: custom_train_step
+  VERBOSE: true

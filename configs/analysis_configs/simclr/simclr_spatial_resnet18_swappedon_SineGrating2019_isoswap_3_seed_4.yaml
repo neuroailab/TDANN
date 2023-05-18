@@ -1,0 +1,11 @@
+model:
+  model_config:
+    TRUNK:
+      NAME: spatial_resnet18
+      TRUNK_PARAMS:
+        position_dir: simclr_spatial_resnet18_fuzzy_swappedon_SineGrating2019_lw0/resnet18_retinotopic_init_fuzzy_swappedon_SineGrating2019_NBVER2
+  name: SpatialResNet18
+  weights:
+    checkpoint_dir: checkpoints/simclr_spatial_resnet18_swappedon_SineGrating2019_isoswap_3_seed_4_checkpoints
+    step: latest
+name: simclr_spatial_resnet18_swappedon_SineGrating2019_isoswap_3_seed_4

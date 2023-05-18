@@ -1,0 +1,98 @@
+# @package _global_
+config:
+  CHECKPOINT:
+    DIR: "simclr_spatial_SG_pretrain_minimal_aug_biased"
+    AUTO_RESUME: True
+    CHECKPOINT_FREQUENCY: 100 # in units of epochs
+  DATA:
+    NUM_DATALOADER_WORKERS: 8
+    TRAIN:
+      DATA_SOURCES: [disk_folder]
+      DATASET_NAMES: [imagenet1k_folder] # this is a lie but I don't think it matters
+      DATA_PATHS: ["/share/kalanit/users/eshedm/sine_grating_images_ori_bias"]
+      BATCHSIZE_PER_REPLICA: 128
+      LABEL_TYPE: sample_index 
+      TRANSFORMS:
+        - name: ImgReplicatePil
+          num_times: 2
+        - name: RandomResizedCrop
+          size: 224
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+      COLLATE_FUNCTION: simclr_collator
+      MMAP_MODE: True
+      COPY_TO_LOCAL_DISK: False
+      DATA_LIMIT: -1
+      DROP_LAST: True
+  MODEL:
+    TRUNK:
+      NAME: spatial_resnet18
+      TRUNK_PARAMS:
+        position_dir: "supervised_resnet18/resnet18_retinotopic_init_fuzzy_swappedon_SineGrating2019"
+    HEAD:
+      PARAMS: [
+        [
+          ["mlp", {"dims": [512, 512], "use_relu": True}],
+          ["mlp", {"dims": [512, 128]}]
+        ],
+        ["identity", {}]
+      ]
+    SYNC_BN_CONFIG:
+        CONVERT_BN_TO_SYNC_BN: True
+        SYNC_BN_TYPE: pytorch
+  LOSS:
+    name: spatial_correlation_simclr_info_nce_loss
+    spatial_correlation_simclr_info_nce_loss:
+      temperature: 0.1
+      buffer_params:
+        embedding_dim: 128
+      neighborhoods_per_batch: 1
+      layer_weights:
+        layer1_0: 2.5
+        layer1_1: 2.5
+        layer2_0: 2.5
+        layer2_1: 2.5
+        layer3_0: 2.5
+        layer3_1: 2.5
+        layer4_0: 2.5
+        layer4_1: 2.5
+  OPTIMIZER:
+    name: sgd
+    use_larc: False
+    weight_decay: 0.000001
+    momentum: 0.9
+    nesterov: False
+    num_epochs: 2000 
+    regularize_bn: False
+    regularize_bias: True
+    param_schedulers:
+      lr:
+        auto_lr_scaling:
+          auto_scale: true
+          base_value: 0.3
+          base_lr_batch_size: 256
+        name: cosine
+        start_value: 0.15   # LR for batch size 256
+        end_value: 0.0000
+        update_interval: step
+  METERS:
+    name: ""
+  TRAINER:
+    TRAIN_STEP_NAME: custom_train_step
+  DISTRIBUTED:
+    BACKEND: nccl
+    NUM_NODES: 1
+    NUM_PROC_PER_NODE: 1 # 1 GPU
+    RUN_ID: auto
+  MACHINE:
+    DEVICE: gpu
+  VERBOSE: True
+  LOG_FREQUENCY: 500
+  TEST_ONLY: False
+  TEST_MODEL: False
+  SEED_VALUE: 0
+  MULTI_PROCESSING_METHOD: forkserver
+  TENSORBOARD_SETUP:
+    USE_TENSORBOARD: true

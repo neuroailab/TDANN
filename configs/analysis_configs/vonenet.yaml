@@ -1,0 +1,9 @@
+model:
+  name: VOneNet
+  layers:
+    - output
+name: VOneNet
+initial_position_dir: VOneNet
+swapopt:
+  num_steps: 50000000
+  steps_per_neighborhood: 500
