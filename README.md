@@ -1,6 +1,8 @@
 # A Unifying Principle for the Functional Organization of Visual Cortex
 Code accompanying our paper on topographic deep neural networks.
 
+[:link: Read the preprint!](https://www.biorxiv.org/content/10.1101/2023.05.18.541361v1)
+
 ## Authors:
 * Eshed Margalit :email:
 * Hyodong Lee
@@ -53,4 +55,6 @@ If you have large datasets (like ImageNet) elsewhere on your filesystem, either 
 To install dependencies, follow the instructions in [INSTALL.md](INSTALL.md).
 
 ## Citation
-Check back soon!
+Please use the following citation for [the paper](https://www.biorxiv.org/content/10.1101/2023.05.18.541361v1) or the code in this repository:
+
+>Margalit, E., Lee, H., Finzi, D., Dicarlo, J.J., Grill-Spector, K., and Yamins, D.L.K. (2023). A Unifying Principle for the Functional Organization of Visual Cortex. bioRxiv doi: 10.1101/2023.05.18.541361
