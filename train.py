@@ -11,7 +11,7 @@ from typing import Any, List
 from vissl.utils.distributed_launcher import launch_distributed
 from vissl.utils.hydra_config import compose_hydra_configuration, convert_to_attrdict
 
-from spacetorch.utils import use_gpus
+from spacetorch.utils.gpu_utils import use_gpus
 
 # spacetorch x VISSL
 import spacetorch.utils.vissl.registration  # noqa

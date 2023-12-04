@@ -30,6 +30,7 @@ SINE_GRATING_2019_DIR = DS_DIR / "sine_grating_images_20190507"
 FLOC_DIR = DS_DIR / "fLoc_stimuli"
 IMAGENET_DIR = DS_DIR / "imagenet"
 DEFAULT_IMAGENET_VAL_DIR = IMAGENET_DIR / "validation"
+RWAVE_CONTAINER_PATH = DS_DIR / "rwave_python_images"
 
 # project outputs
 PROJ_DIR = _base_fs / "tdann"
