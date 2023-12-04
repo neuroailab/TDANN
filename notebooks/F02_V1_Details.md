@@ -435,6 +435,81 @@ for ax, (tiss, mask, s) in zip(ax_rows[:, 0], macaque_data):
 figure_utils.save(fig, "F02/dfh_maps")
 ```
 
+```python
+## Revision: Example maps from other models
+```
+
+```python
+# choose TDANN tissue to plot
+bonus_to_plot = {
+    "TDANN": tissues["SW_0pt25"][4],
+    "Task Only": tissues["SW_0"][0],
+    "Unoptimized": tissues["Unoptimized"][4],
+    "DNN-SOM": tissues["DNN-SOM"][0],
+    "Hand-Crafted SOM": tissues["Hand-Crafted SOM"][0],
+}
+```
+
+```python
+# one column for each model, +1 for neural data
+ncols = len(bonus_to_plot) + 1
+nrows = len(METRIC_DICT)
+
+fig, ax_rows = plt.subplots(
+    ncols=ncols, nrows=nrows, figsize=(ncols * 0.8, nrows), gridspec_kw={"hspace": 0.3}
+)
+
+for ax in ax_rows.ravel():
+    ax.axis("off")
+
+# plot models
+for axes, (name, tissue) in zip(ax_rows.T[1:], bonus_to_plot.items()):
+    # restrict to a smaller window (15% of total width on each side)
+    tissue.set_mask_by_pct_limits([[30, 45], [30, 45]])
+        
+    # make a plot for each "metric": orientations, spatial frequencies, and colors
+    for (metric_name, metric), ax in zip(METRIC_DICT.items(), axes):
+        scatter_handle = tissue.make_parameter_map(
+            ax,
+            metric=metric,
+            scale_points=True,
+            final_s=18,
+            rasterized=True,
+            linewidths=0.03,
+            edgecolor=(0, 0, 0, 0.5),
+            marker='s' if "SOM" in name else '.'
+        )
+
+        # add a colorbar if we're in the last column
+        if axes[0] == ax_rows[0, -1]:
+            cbar = add_sine_colorbar(fig, ax, metric, label=metric.xlabel)
+            cbar.ax.tick_params(labelsize=5)
+            cbar.ax.set_yticklabels(
+                [metric.xticklabels[0], metric.xticklabels[-1]], rotation=90
+            )
+            cbar.set_label(label="", fontsize=8)
+
+    plot_utils.add_scale_bar(
+        axes[-1],
+        width=0.2 if "SOM" in name else 1,
+        y_start=1.33 if "SOM" in name else 0
+    )
+    plt.subplots_adjust(hspace=0.05, wspace=0.01)
+
+# plot macaque data
+for ax, (tiss, mask, s) in zip(ax_rows[:, 0], macaque_data):
+    ax.scatter(
+        *tiss.positions[mask].T,
+        c=tiss.data.T.ravel()[mask],
+        cmap=tiss.cmap,
+        rasterized=True,
+        s=s,
+        linewidths=0,
+    )
+    plot_utils.add_scale_bar(ax, 0.2)
+figure_utils.save(fig, "F02/dfh_maps_bonus")
+```
+
 ### Map Quantification
 
 ```python
