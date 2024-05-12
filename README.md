@@ -57,4 +57,4 @@ To install dependencies, follow the instructions in [INSTALL.md](INSTALL.md).
 ## Citation
 Please use the following citation for [the paper](https://authors.elsevier.com/a/1j3oA3BtfH9A7g) or the code in this repository:
 
->Margalit, E., Lee, H., Finzi, D., DiCarlo, J. J., Grill-Spector, K., & Yamins, D. L. (2024). A unifying framework for functional organization in early and higher ventral visual cortex. _Neuron_.
+>Margalit, E., Lee, H., Finzi, D., DiCarlo, J. J., Grill-Spector, K., & Yamins, D. L. K. (2024). A unifying framework for functional organization in early and higher ventral visual cortex. _Neuron_.
