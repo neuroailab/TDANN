@@ -1,7 +1,7 @@
 # A Unifying Principle for the Functional Organization of Visual Cortex
 Code accompanying our paper on topographic deep neural networks.
 
-[:link: Read the paper!](https://authors.elsevier.com/a/1j3oA3BtfH9A7g)
+[:link: Read the paper!](https://www.cell.com/neuron/abstract/S0896-6273(24)00279-4)
 
 ## Authors:
 * Eshed Margalit :email:
